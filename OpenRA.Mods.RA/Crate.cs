@@ -47,8 +47,11 @@ namespace OpenRA.Mods.RA
 		public Crate(ActorInitializer init, CrateInfo info)
 		{
 			this.self = init.self;
-			if (init.Contains<LocationInit>())
-				this.Location = init.Get<LocationInit,int2>();
+			if( init.Contains<LocationInit>() )
+			{
+				this.Location = init.Get<LocationInit, int2>();
+				this.CenterLocation = Util.CenterOfCell( Location );
+			}
 			
 			this.Info = info;
 			
@@ -80,6 +83,7 @@ namespace OpenRA.Mods.RA
 		}
 
 		public int2 TopLeft { get { return Location; } }
+		public float2 CenterLocation { get; set; }
 		public IEnumerable<int2> OccupiedCells() { return new int2[] { Location }; }
 
 		public bool CanEnterCell(int2 cell)
@@ -96,7 +100,7 @@ namespace OpenRA.Mods.RA
 			uim.Remove(self, this);
 
 			Location = cell;
-			self.CenterLocation = Util.CenterOfCell(cell);
+			CenterLocation = Util.CenterOfCell(cell);
 
 			var seq = self.World.GetTerrainInfo(cell).IsWater ? "water" : "idle";
 			if (seq != self.Trait<RenderSimple>().anim.CurrentSequence.Name)

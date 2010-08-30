@@ -41,18 +41,19 @@ namespace OpenRA.Mods.RA
 
 		public Aircraft( ActorInitializer init , AircraftInfo info)
 		{
-			if (init.Contains<LocationInit>())
-				this.Location = init.Get<LocationInit,int2>();
+			if( init.Contains<LocationInit>() )
+			{
+				this.Location = init.Get<LocationInit, int2>();
+				this.CenterLocation = Util.CenterOfCell( Location );
+			}
 			
 			this.Facing = init.Contains<FacingInit>() ? init.Get<FacingInit,int>() : info.InitialFacing;
 			this.Altitude = init.Contains<AltitudeInit>() ? init.Get<AltitudeInit,int>() : 0;
 			Info = info;
 		}
 
-		public int2 TopLeft
-		{
-			get { return Location; }
-		}
+		public int2 TopLeft { get { return Location; } }
+		public float2 CenterLocation { get; set; }
 		
 		public int ROT { get { return Info.ROT; } }
 		
@@ -61,7 +62,7 @@ namespace OpenRA.Mods.RA
 		public void SetPosition(Actor self, int2 cell)
 		{
 			Location = cell;
-			self.CenterLocation = Util.CenterOfCell(cell);
+			CenterLocation = Util.CenterOfCell(cell);
 		}
 		
 		public bool AircraftCanEnter(Actor self, Actor a)

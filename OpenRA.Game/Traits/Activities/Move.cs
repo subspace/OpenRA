@@ -274,7 +274,7 @@ namespace OpenRA.Traits.Activities
 			{
 				var frac = (float)moveFraction / moveFractionTotal;
 
-				self.CenterLocation = float2.Lerp( from, to, frac );
+				mobile.CenterLocation = float2.Lerp( from, to, frac );
 
 				if( moveFraction >= moveFractionTotal )
 					mobile.Facing = toFacing & 0xFF;
@@ -332,7 +332,7 @@ namespace OpenRA.Traits.Activities
 
 			protected override MovePart OnComplete( Actor self, Mobile mobile, Move parent )
 			{
-				self.CenterLocation = Util.CenterOfCell( mobile.toCell );
+				mobile.CenterLocation = Util.CenterOfCell( mobile.toCell );
 				mobile.fromCell = mobile.toCell;
 				mobile.FinishedMoving(self);
 				return null;

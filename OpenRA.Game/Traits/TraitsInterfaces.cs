@@ -64,6 +64,7 @@ namespace OpenRA.Traits
 	{
 		int2 TopLeft { get; }
 		IEnumerable<int2> OccupiedCells();
+		float2 CenterLocation { get; }
 	}
 	
 	public interface IOccupyAir

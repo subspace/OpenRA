@@ -44,11 +44,13 @@ namespace OpenRA.Traits
 
 			var move = newUnit.Trait<IMove>();
 			var facing = newUnit.TraitOrDefault<IFacing>();
-			
+			var mobile = newUnit.TraitOrDefault<Mobile>();
+
 			// Set the physical position of the unit as the exit cell
 			move.SetPosition(newUnit,exit);
 			var to = Util.CenterOfCell(exit);
-			newUnit.CenterLocation = spawn;
+			if( mobile != null )
+				mobile.CenterLocation = spawn;
 			if (facing != null)
 				facing.Facing = exitinfo.Facing < 0 ? Util.GetFacing(to - spawn, facing.Facing) : exitinfo.Facing;
 			self.World.Add(newUnit);
@@ -56,7 +58,7 @@ namespace OpenRA.Traits
 			// Animate the spawn -> exit transition
 			var speed = move.MovementSpeedForCell(self, exit);
 			var length = speed > 0 ? (int)( ( to - spawn ).Length*3 / speed ) : 0;
-			newUnit.QueueActivity(new Activities.Drag(spawn, to, length));
+			newUnit.QueueActivity(new Activities.Drag(newUnit, spawn, to, length));
 			
 			// For the target line
 			var target = exit;

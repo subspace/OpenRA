@@ -33,11 +33,14 @@ namespace OpenRA.Mods.RA
 		{
 			this.self = init.self;
 			this.location = init.Get<LocationInit,int2>();
+			this.CenterLocation = Util.CenterOfCell( this.location );
 			this.Facing = init.Contains<FacingInit>() ? init.Get<FacingInit,int>() : 128;
 			self.World.WorldActor.Trait<UnitInfluence>().Add(self, this);
 		}
 
 		public int2 TopLeft { get { return location; } }
+
+		public float2 CenterLocation { get; set; }
 
 		public IEnumerable<int2> OccupiedCells() { yield return TopLeft; }
 	}

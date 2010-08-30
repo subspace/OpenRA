@@ -37,7 +37,7 @@ namespace OpenRA.Mods.Cnc
 					dockedHarv = harv;
 					self.Trait<RenderBuilding>().PlayCustomAnim(self, "active");
 					
-					harv.QueueActivity( new Drag(startDock, endDock, 12) );
+					harv.QueueActivity( new Drag(harv, startDock, endDock, 12) );
 					harv.QueueActivity( new CallFunc( () =>
 					{
 						self.World.AddFrameEndTask( w1 =>
@@ -49,7 +49,7 @@ namespace OpenRA.Mods.Cnc
 					}, false ) );
 					harv.QueueActivity( new Wait(18, false ) );
 					harv.QueueActivity( new CallFunc( () => harvester.Visible = true, false ) );
-					harv.QueueActivity( new Drag(endDock, startDock, 12) );
+					harv.QueueActivity( new Drag(harv, endDock, startDock, 12) );
 					harv.QueueActivity( new CallFunc( () => dockedHarv = null, false ) );
 					if (harvester.LastHarvestedCell != int2.Zero)
 					{

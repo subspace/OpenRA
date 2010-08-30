@@ -65,10 +65,13 @@ namespace OpenRA.Mods.RA.Effects
 							mobile.SetPosition(cargo, loc);
 						else
 						{
-							cargo.CenterLocation = Traits.Util.CenterOfCell(loc);
+							throw new System.NotImplementedException();
 
-							if (cargo.HasTrait<IOccupySpace>())
-								world.WorldActor.Trait<UnitInfluence>().Add(cargo, cargo.Trait<IOccupySpace>());
+							// WTFWTFWTF.
+							//cargo.CenterLocation = Traits.Util.CenterOfCell(loc);
+
+							//if (cargo.HasTrait<IOccupySpace>())
+							//	world.WorldActor.Trait<UnitInfluence>().Add(cargo, cargo.Trait<IOccupySpace>());
 						}
 						w.Add(cargo);
 					});

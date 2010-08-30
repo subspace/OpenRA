@@ -55,7 +55,7 @@ namespace OpenRA.Traits
 			this.self = init.self;
 			this.topLeft = init.Get<LocationInit,int2>();
 			Info = self.Info.Traits.Get<BuildingInfo>();
-			self.CenterLocation = Game.CellSize 
+			CenterLocation = Game.CellSize 
 				* ((float2)topLeft + .5f * (float2)Info.Dimensions);
 		}
 		
@@ -108,6 +108,8 @@ namespace OpenRA.Traits
 		{
 			get { return topLeft; }
 		}
+
+		public float2 CenterLocation { get; set; }
 
 		public IEnumerable<int2> OccupiedCells()
 		{

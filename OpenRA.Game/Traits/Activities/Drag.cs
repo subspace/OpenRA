@@ -19,18 +19,20 @@ namespace OpenRA.Traits.Activities
 		float2 endLocation;
 		float2 startLocation;
 		int length;
+		Mobile mobile;
 
-		public Drag(float2 start, float2 end, int length)
+		public Drag( Actor unit, float2 start, float2 end, int length)
 		{
 			startLocation = start;
 			endLocation = end;
 			this.length = length;
+			mobile = unit.Trait<Mobile>();
 		}
 		
 		int ticks = 0;
 		public IActivity Tick( Actor self )
 		{
-			self.CenterLocation = float2.Lerp(startLocation, endLocation, (float)ticks/(length-1));
+			mobile.CenterLocation = float2.Lerp(startLocation, endLocation, (float)ticks/(length-1));
 			
 			if (++ticks >= length)
 				return NextActivity;

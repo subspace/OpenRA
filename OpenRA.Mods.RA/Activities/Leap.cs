@@ -40,7 +40,8 @@ namespace OpenRA.Mods.RA.Activities
 
 			t += (1f / delay);
 
-			self.CenterLocation = float2.Lerp(initialLocation, target.CenterLocation, t);
+			var mobile = self.Trait<Mobile>();
+			mobile.CenterLocation = float2.Lerp(initialLocation, target.CenterLocation, t);
 
 			if (t >= 1f)
 			{

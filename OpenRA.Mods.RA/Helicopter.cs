@@ -141,11 +141,11 @@ namespace OpenRA.Mods.RA
 				.Select(h => self.Trait<Helicopter>().GetRepulseForce(self, h))
 				.Aggregate(float2.Zero, (a, b) => a + b);
 
-			self.CenterLocation += rawSpeed * f;
+			aircraft.CenterLocation += rawSpeed * f;
 
 			if (--offsetTicks <= 0)
 			{
-				self.CenterLocation += Info.InstabilityMagnitude * self.World.SharedRandom.Gauss2D(5);
+				aircraft.CenterLocation += Info.InstabilityMagnitude * self.World.SharedRandom.Gauss2D(5);
 				aircraft.Altitude += (int)(Info.InstabilityMagnitude * self.World.SharedRandom.Gauss1D(5));
 				offsetTicks = Info.InstabilityTicks;
 			}
