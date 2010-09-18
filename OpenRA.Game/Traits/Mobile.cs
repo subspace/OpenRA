@@ -117,14 +117,14 @@ namespace OpenRA.Traits
 			Log.Write("debug", "{0}", new StackTrace());
 		}
 
-		UnitInfluence uim;
+		LocationCache locationCache;
 		
 		public Mobile(ActorInitializer init, MobileInfo info)
 		{
 			this.self = init.self;
 			this.Info = info;
 			
-			uim = self.World.WorldActor.Trait<UnitInfluence>();
+			locationCache = self.World.WorldActor.Trait<LocationCache>();
 			
 			if (init.Contains<LocationInit>())
 			{
@@ -237,25 +237,23 @@ namespace OpenRA.Traits
 
 		public static bool CanEnterCell( World world, MobileInfo mi, int2 cell, Actor ignoreActor, bool checkTransientActors )
 		{
-			var bim = world.WorldActor.Trait<BuildingInfluence>();
-			var uim = world.WorldActor.Trait<UnitInfluence>();
-			return Mobile.CanEnterCell( mi, world, uim, bim, cell, ignoreActor, checkTransientActors );
+			var lc = world.WorldActor.Trait<LocationCache>();
+			return Mobile.CanEnterCell( mi, world, lc, cell, ignoreActor, checkTransientActors );
 		}
 		
 		public bool CanEnterCell( int2 cell, Actor ignoreActor, bool checkTransientActors )
 		{
-			var bim = self.World.WorldActor.Trait<BuildingInfluence>();
-			var uim = self.World.WorldActor.Trait<UnitInfluence>();
-			return CanEnterCell( Info, self.World, uim, bim, cell, ignoreActor, checkTransientActors );
+			var lc = self.World.WorldActor.Trait<LocationCache>();
+			return CanEnterCell( Info, self.World, lc, cell, ignoreActor, checkTransientActors );
 		}
 
-		public static bool CanEnterCell( MobileInfo mobileInfo, World world, UnitInfluence uim, BuildingInfluence bim, int2 cell, Actor ignoreActor, bool checkTransientActors )
+		public static bool CanEnterCell( MobileInfo mobileInfo, World world, LocationCache lc, int2 cell, Actor ignoreActor, bool checkTransientActors )
 		{
 			if (MovementCostForCell(mobileInfo, world, cell) == int.MaxValue)
 				return false;
 
 			// Check for buildings
-			var building = bim.GetBuildingBlocking(cell);
+			var building = lc.bim.GetBuildingBlocking(cell);
 			if (building != null && building != ignoreActor)
 			{
 				if (mobileInfo.Crushes == null)
@@ -270,7 +268,7 @@ namespace OpenRA.Traits
 			}
 
 			// Check mobile actors
-			var blockingActors = uim.GetUnitsAt( cell ).Where( x => x != ignoreActor ).ToList();
+			var blockingActors = lc.uim.GetUnitsAt( cell ).Where( x => x != ignoreActor ).ToList();
 			if (checkTransientActors && blockingActors.Count > 0)
 			{
 				// We can enter a cell with nonshareable units only if we can crush all of them
@@ -287,7 +285,7 @@ namespace OpenRA.Traits
 		
 		public void FinishedMoving(Actor self)
 		{
-			var crushable = uim.GetUnitsAt(toCell).Where(a => a != self && a.HasTrait<ICrushable>());
+			var crushable = locationCache.uim.GetUnitsAt(toCell).Where(a => a != self && a.HasTrait<ICrushable>());
 			foreach (var a in crushable)
 			{
 				var crushActions = a.TraitsImplementing<ICrushable>().Where(b => b.CrushClasses.Intersect(Info.Crushes).Any());
@@ -324,12 +322,12 @@ namespace OpenRA.Traits
 		
 		public void AddInfluence()
 		{
-			uim.Add( self, this );
+			locationCache.uim.Add( self, this );
 		}
 		
 		public void RemoveInfluence()
 		{
-			uim.Remove( self, this );
+			locationCache.uim.Remove( self, this );
 		}
 
 		public void OnNudge(Actor self, Actor nudger)

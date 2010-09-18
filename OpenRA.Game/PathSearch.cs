@@ -27,14 +27,12 @@ namespace OpenRA
 		public bool inReverse;
 		
 		MobileInfo mobileInfo;
-		BuildingInfluence bim;
-		UnitInfluence uim;
+		LocationCache lc;
 		
 		public PathSearch(World world, MobileInfo mobileInfo)
 		{
 			this.world = world;
-			bim = world.WorldActor.Trait<BuildingInfluence>();
-			uim = world.WorldActor.Trait<UnitInfluence>();
+			lc = world.WorldActor.Trait<LocationCache>();
 			cellInfo = InitCellInfo();
 			this.mobileInfo = mobileInfo;
 			queue = new PriorityQueue<PathDistance>();
@@ -107,7 +105,7 @@ namespace OpenRA
 				if (costHere == int.MaxValue)
 					continue;
 
-				if (!Mobile.CanEnterCell(mobileInfo, world, uim, bim, newHere, ignoreBuilding, checkForBlocked))
+				if (!Mobile.CanEnterCell(mobileInfo, world, lc, newHere, ignoreBuilding, checkForBlocked))
 					continue;
 				
 				if (customBlock != null && customBlock(newHere))

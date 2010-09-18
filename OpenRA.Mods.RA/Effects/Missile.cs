@@ -107,7 +107,7 @@ namespace OpenRA.Mods.RA.Effects
 			{
 				var cell = Traits.Util.CellContaining(Pos);
 
-				if (world.WorldActor.Trait<UnitInfluence>().GetUnitsAt(cell).Any(
+				if (world.WorldActor.Trait<LocationCache>().uim.GetUnitsAt(cell).Any(
 					a => a.HasTrait<IBlocksBullets>()))
 					Explode(world);
 			}

@@ -193,7 +193,7 @@ namespace OpenRA.Traits.Activities
 
 		void NudgeBlocker(Actor self, int2 nextCell)
 		{
-			var blocker = self.World.WorldActor.Trait<UnitInfluence>().GetUnitsAt(nextCell).FirstOrDefault();
+			var blocker = self.World.WorldActor.Trait<LocationCache>().uim.GetUnitsAt(nextCell).FirstOrDefault();
 			if (blocker == null) return;
 
 			Log.Write("debug", "NudgeBlocker #{0} nudges #{1} at {2} from {3}",

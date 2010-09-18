@@ -44,7 +44,7 @@ namespace OpenRA
 		{
 			if (Game.Settings.Debug.ShowCollisions)
 			{
-				var uim = world.WorldActor.Trait<UnitInfluence>();
+				var uim = world.WorldActor.Trait<LocationCache>().uim;
 				
 				for (var i = world.Map.Bounds.Left; i < world.Map.Bounds.Right; i++)
 					for (var j = world.Map.Bounds.Top; j < world.Map.Bounds.Bottom; j++)	

@@ -36,7 +36,7 @@ namespace OpenRA.Mods.RA
 			{
 				var exit = self.Location + s.ExitCell;
 				var spawn = self.CenterLocation + s.SpawnOffset;
-				if (!self.World.WorldActor.Trait<UnitInfluence>().GetUnitsAt( exit ).Any())
+				if (!self.World.WorldActor.Trait<LocationCache>().uim.GetUnitsAt( exit ).Any())
 				{
 					var newUnit = self.World.CreateActor( producee.Name, new TypeDictionary
 					{

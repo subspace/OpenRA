@@ -21,7 +21,7 @@ namespace OpenRA.Mods.RA.Activities
 		int2? ChooseExitTile(Actor self, Actor cargo)
 		{
 			// is anyone still hogging this tile?
-			if (self.World.WorldActor.Trait<UnitInfluence>().GetUnitsAt(self.Location).Count() > 1)
+			if (self.World.WorldActor.Trait<LocationCache>().uim.GetUnitsAt(self.Location).Count() > 1)
 				return null;
 			
 			var mobile = cargo.Trait<Mobile>();

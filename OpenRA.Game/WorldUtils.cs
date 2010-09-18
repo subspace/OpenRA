@@ -28,8 +28,7 @@ namespace OpenRA
 		
 		public static bool IsCellBuildable(this World world, int2 a, bool waterBound, Actor toIgnore)
 		{
-			if (world.WorldActor.Trait<BuildingInfluence>().GetBuildingAt(a) != null) return false;
-			if (world.WorldActor.Trait<UnitInfluence>().GetUnitsAt(a).Any(b => b != toIgnore)) return false;
+			if( world.WorldActor.Trait<LocationCache>().ActorsAt( a ).Any( b => b != toIgnore ) ) return false;
 			
 			if (waterBound)
 				return world.Map.IsInMap(a.X,a.Y) && GetTerrainInfo(world,a).IsWater;
@@ -131,7 +130,7 @@ namespace OpenRA
 			{
 				for( int x = scanStart.X ; x < scanEnd.X ; x++ )
 				{
-					var at = world.WorldActor.Trait<BuildingInfluence>().GetBuildingAt( new int2( x, y ) );
+					var at = world.WorldActor.Trait<LocationCache>().bim.GetBuildingAt( new int2( x, y ) );
 					if( at != null && at.Owner.Stances[ p ] == Stance.Ally && at.Info.Traits.Get<BuildingInfo>().BaseNormal )
 						nearnessCandidates.Add( new int2( x, y ) );
 				}

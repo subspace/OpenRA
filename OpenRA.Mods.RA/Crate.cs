@@ -52,7 +52,7 @@ namespace OpenRA.Mods.RA
 			
 			this.Info = info;
 			
-			self.World.WorldActor.Trait<UnitInfluence>().Add(self, this);
+			self.World.WorldActor.Trait<LocationCache>().uim.Add(self, this);
 		}
 
 		public void OnCrush(Actor crusher)
@@ -91,7 +91,7 @@ namespace OpenRA.Mods.RA
 
 		public void SetPosition(Actor self, int2 cell)
 		{
-			var uim = self.World.WorldActor.Trait<UnitInfluence>();
+			var uim = self.World.WorldActor.Trait<LocationCache>().uim;
 
 			uim.Remove(self, this);
 

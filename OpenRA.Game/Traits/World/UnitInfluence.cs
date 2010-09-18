@@ -16,11 +16,6 @@ using OpenRA.FileFormats;
 
 namespace OpenRA.Traits
 {
-	public class UnitInfluenceInfo : ITraitInfo
-	{
-		public object Create( ActorInitializer init ) { return new UnitInfluence( init.world ); }
-	}
-
 	public class UnitInfluence
 	{
 		class InfluenceNode

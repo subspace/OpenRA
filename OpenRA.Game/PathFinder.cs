@@ -88,7 +88,7 @@ namespace OpenRA
 			return q =>
 				p != q &&
 				((p - q).LengthSquared < dist * dist) &&
-				(world.WorldActor.Trait<UnitInfluence>().GetUnitsAt(q).Any(a => a.Group != self.Group));
+				(world.WorldActor.Trait<LocationCache>().uim.GetUnitsAt(q).Any(a => a.Group != self.Group));
 		}
 
 		public List<int2> FindPath( PathSearch search )

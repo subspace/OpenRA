@@ -29,7 +29,7 @@ namespace OpenRA.Mods.RA
 		{
 			this.self = self;
 			this.info = info;
-			self.World.WorldActor.Trait<UnitInfluence>().Add(self, self.Trait<Building>());
+			self.World.WorldActor.Trait<LocationCache>().uim.Add(self, self.Trait<Building>());
 		}
 		
 		public IEnumerable<string> CrushClasses { get { return info.CrushClasses; } }

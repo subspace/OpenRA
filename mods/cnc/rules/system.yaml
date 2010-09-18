@@ -44,8 +44,7 @@ World:
 	NukePaletteEffect:
 	WaterPaletteRotation:
 		CncMode: true
-	BuildingInfluence:
-	UnitInfluence:
+	LocationCache:
 	BridgeLayer:
 		Bridges: bridge1, bridge2, bridge3, bridge4
 	PaletteFromCurrentTheatre:

@@ -229,6 +229,7 @@
     <Compile Include="Traits\SharesCell.cs" />
     <Compile Include="Traits\Valued.cs" />
     <Compile Include="Traits\World\BibLayer.cs" />
+    <Compile Include="Traits\World\LocationCache.cs" />
     <Compile Include="Widgets\Delegates\DeveloperModeDelegate.cs" />
   </ItemGroup>
   <ItemGroup>

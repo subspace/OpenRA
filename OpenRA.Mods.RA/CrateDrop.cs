@@ -63,8 +63,7 @@ namespace OpenRA.Mods.RA
 				if (!(inWater ? info.ValidWater : info.ValidGround).Contains(terrainType)) continue;
 				
 				// Don't drop on any actors
-				if (self.World.WorldActor.Trait<BuildingInfluence>().GetBuildingAt(p) != null) continue;
-				if (self.World.WorldActor.Trait<UnitInfluence>().GetUnitsAt(p).Any()) continue;
+				if( self.World.WorldActor.Trait<LocationCache>().AnyActorsAt( p ) ) continue;
 
 				self.World.AddFrameEndTask(w =>
 					{

@@ -13,11 +13,6 @@ using OpenRA.GameRules;
 
 namespace OpenRA.Traits
 {
-	public class BuildingInfluenceInfo : ITraitInfo
-	{
-		public object Create( ActorInitializer init ) { return new BuildingInfluence( init.world ); }
-	}
-
 	public class BuildingInfluence
 	{
 		bool[,] blocked;

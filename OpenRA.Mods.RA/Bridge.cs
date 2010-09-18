@@ -144,7 +144,7 @@ namespace OpenRA.Mods.RA
 
 		void KillUnitsOnBridge()
 		{
-			var uim = self.World.WorldActor.Trait<UnitInfluence>();
+			var uim = self.World.WorldActor.Trait<LocationCache>().uim;
 
 			foreach (var c in TileSprites[currentTemplate].Keys)
 				foreach (var a in uim.GetUnitsAt(c))

@@ -42,7 +42,7 @@ namespace OpenRA.Mods.RA.Render
 		public override void Tick(Actor self)
 		{
 			base.Tick(self);
-			if (isOpen && !self.World.WorldActor.Trait<UnitInfluence>()
+			if (isOpen && !self.World.WorldActor.Trait<LocationCache>().uim
 				.GetUnitsAt(openExit).Any())
 			{
 				isOpen = false;

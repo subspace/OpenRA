@@ -36,7 +36,7 @@ namespace OpenRA.Mods.RA
 			this.self = init.self;
 			this.info = info;
 			this.location = init.Get<LocationInit,int2>();
-			self.World.WorldActor.Trait<UnitInfluence>().Add(self, this);
+			self.World.WorldActor.Trait<LocationCache>().uim.Add(self, this);
 		}
 
 		public void OnCrush(Actor crusher)
