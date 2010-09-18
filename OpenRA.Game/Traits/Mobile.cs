@@ -252,30 +252,17 @@ namespace OpenRA.Traits
 			if (MovementCostForCell(mobileInfo, world, cell) == int.MaxValue)
 				return false;
 
-			// Check for buildings
-			var building = lc.bim.GetBuildingBlocking(cell);
-			if (building != null && building != ignoreActor)
-			{
-				if (mobileInfo.Crushes == null)
-					return false;
+			if (!checkTransientActors)
+				return true;
 
-				var crushable = building.TraitsImplementing<ICrushable>();
-				if (crushable.Count() == 0)
-					return false;
-
-				if (!crushable.Any(b => b.CrushClasses.Intersect(mobileInfo.Crushes).Any()))
-					return false;
-			}
-
-			// Check mobile actors
-			var blockingActors = lc.uim.GetUnitsAt( cell ).Where( x => x != ignoreActor ).ToList();
-			if (checkTransientActors && blockingActors.Count > 0)
+			var blockers = lc.ActorsBlocking( cell ).Where( x => x != ignoreActor ).ToList();
+			if (blockers.Count > 0)
 			{
 				// We can enter a cell with nonshareable units only if we can crush all of them
 				if (mobileInfo.Crushes == null)
 					return false;
 
-				if (blockingActors.Any(a => !(a.HasTrait<ICrushable>() &&
+				if (blockers.Any(a => !(a.HasTrait<ICrushable>() &&
 											 a.TraitsImplementing<ICrushable>().Any(b => b.CrushClasses.Intersect(mobileInfo.Crushes).Any()))))
 					return false;
 			}
