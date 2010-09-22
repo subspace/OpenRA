@@ -226,6 +226,7 @@
     <Compile Include="ObjectCreator.cs" />
     <Compile Include="Network\SyncReport.cs" />
     <Compile Include="TraitDictionary.cs" />
+    <Compile Include="Traits\OccupySpace.cs" />
     <Compile Include="Traits\SharesCell.cs" />
     <Compile Include="Traits\Valued.cs" />
     <Compile Include="Traits\World\BibLayer.cs" />

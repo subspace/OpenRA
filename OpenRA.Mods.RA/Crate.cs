@@ -34,25 +34,18 @@ namespace OpenRA.Mods.RA
 	}
 
 	// ITeleportable is required for paradrop
-	class Crate : ITick, IOccupySpace, ITeleportable, ICrushable
+	class Crate : OccupySpace, ITick, ITeleportable, ICrushable
 	{
 		readonly Actor self;
 		[Sync]
 		int ticks;
 
-		[Sync]
-		public int2 Location;
-
 		CrateInfo Info;
 		public Crate(ActorInitializer init, CrateInfo info)
+			: base( init )
 		{
 			this.self = init.self;
-			if (init.Contains<LocationInit>())
-				this.Location = init.Get<LocationInit,int2>();
-			
 			this.Info = info;
-			
-			self.World.WorldActor.Trait<LocationCache>().uim.Add(self, this);
 		}
 
 		public void OnCrush(Actor crusher)
@@ -79,9 +72,6 @@ namespace OpenRA.Mods.RA
 				self.Destroy();
 		}
 
-		public int2 TopLeft { get { return Location; } }
-		public IEnumerable<int2> OccupiedCells() { return new int2[] { Location }; }
-
 		public bool CanEnterCell(int2 cell)
 		{
 			if (!self.World.Map.IsInMap(cell.X, cell.Y)) return false;
@@ -91,18 +81,12 @@ namespace OpenRA.Mods.RA
 
 		public void SetPosition(Actor self, int2 cell)
 		{
-			var uim = self.World.WorldActor.Trait<LocationCache>().uim;
-
-			uim.Remove(self, this);
-
-			Location = cell;
+			TopLeft = cell;
 			self.CenterLocation = Util.CenterOfCell(cell);
 
 			var seq = self.World.GetTerrainInfo(cell).IsWater ? "water" : "idle";
 			if (seq != self.Trait<RenderSimple>().anim.CurrentSequence.Name)
 				self.Trait<RenderSimple>().anim.PlayRepeating(seq);
-
-			uim.Add(self, this);
 		}
 
 		public IEnumerable<string> CrushClasses { get { yield return "crate"; } }

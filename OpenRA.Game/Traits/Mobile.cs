@@ -89,23 +89,15 @@ namespace OpenRA.Traits
 		public int InitialFacing { get { return Info.InitialFacing; } }
 
 		[Sync]
-		public int2 fromCell
-		{
-			get { return __fromCell; }
-			set { SetLocation( value, __toCell ); }
-		}
+		public int2 fromCell { get { return __fromCell; } }
 
 		[Sync]
-		public int2 toCell
-		{
-			get { return __toCell; }
-			set { SetLocation( __fromCell, value ); }
-		}
+		public int2 toCell { get { return __toCell; } }
 
 		[Sync]
 		public int PathHash;	// written by Move.EvalPath, to temporarily debug this crap.
 
-		void SetLocation(int2 from, int2 to)
+		internal void SetLocation(int2 from, int2 to)
 		{
 			if (fromCell == from && toCell == to) return;
 			RemoveInfluence();

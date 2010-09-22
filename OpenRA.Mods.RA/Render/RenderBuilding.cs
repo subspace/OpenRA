@@ -88,7 +88,7 @@ namespace OpenRA.Mods.RA.Render
 				return;
 			
 			if (e.DamageState == DamageState.Dead)
-				foreach (var t in Footprint.UnpathableTiles( self.Info.Name, self.Info.Traits.Get<BuildingInfo>(), self.Location ))
+				foreach (var t in Footprint.UnpathableTiles( self.Info.Traits.Get<BuildingInfo>(), self.Location ))
 				{
 					var cell = t; // required: c# fails at bindings
 					self.World.AddFrameEndTask(w => w.Add(new Explosion(w, Util.CenterOfCell(cell).ToInt2(), "building", false)));

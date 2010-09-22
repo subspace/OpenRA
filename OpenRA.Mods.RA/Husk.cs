@@ -18,27 +18,17 @@ namespace OpenRA.Mods.RA
 		public object Create( ActorInitializer init ) { return new Husk( init ); }
 	}
 
-	class Husk : IOccupySpace, IFacing
+	class Husk : OccupySpace, IFacing
 	{
-		Actor self;
-		[Sync]
-		int2 location;
-		
 		[Sync]
 		public int Facing { get; set; }
 		public int ROT { get { return 0; } }
 		public int InitialFacing { get { return 128; } }
 
-		public Husk(ActorInitializer init)
+		public Husk( ActorInitializer init )
+			: base( init )
 		{
-			this.self = init.self;
-			this.location = init.Get<LocationInit,int2>();
-			this.Facing = init.Contains<FacingInit>() ? init.Get<FacingInit,int>() : 128;
-			self.World.WorldActor.Trait<LocationCache>().uim.Add(self, this);
+			this.Facing = init.Contains<FacingInit>() ? init.Get<FacingInit, int>() : 128;
 		}
-
-		public int2 TopLeft { get { return location; } }
-
-		public IEnumerable<int2> OccupiedCells() { yield return TopLeft; }
 	}
 }

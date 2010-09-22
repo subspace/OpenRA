@@ -19,17 +19,11 @@ namespace OpenRA.GameRules
 	{
 		public static IEnumerable<int2> Tiles( string name, BuildingInfo buildingInfo, int2 topLeft )
 		{
-			var dim = buildingInfo.Dimensions;
+			var footprint = buildingInfo.Footprint;
+			if( Rules.Info[ name ].Traits.Contains<BibInfo>() )
+				footprint += " " + new string( '=', buildingInfo.Dimensions.X );
 
-			var footprint = buildingInfo.Footprint.Where(x => !char.IsWhiteSpace(x));
-			
-			if (Rules.Info[ name ].Traits.Contains<BibInfo>())
-			{
-				dim.Y += 1;
-				footprint = footprint.Concat(new char[dim.X]);
-			}
-
-			return TilesWhere( name, dim, footprint.ToArray(), a => a != '_' ).Select( t => t + topLeft );
+			return TilesWhere( topLeft, footprint, _ => true );
 		}
 
 		public static IEnumerable<int2> Tiles(Actor a)
@@ -37,23 +31,32 @@ namespace OpenRA.GameRules
 			return Tiles( a.Info.Name, a.Info.Traits.Get<BuildingInfo>(), a.Location );
 		}
 
-		public static IEnumerable<int2> UnpathableTiles( string name, BuildingInfo buildingInfo, int2 position )
+		public static IEnumerable<int2> UnpathableTiles( BuildingInfo buildingInfo, int2 position )
 		{
-			var footprint = buildingInfo.Footprint.Where( x => !char.IsWhiteSpace( x ) ).ToArray();
-			foreach( var tile in TilesWhere( name, buildingInfo.Dimensions, footprint, a => a == 'x' ) )
-				yield return tile + position;
+			return TilesWhere( position, buildingInfo.Footprint, a => a == 'x' );
 		}
 
-		static IEnumerable<int2> TilesWhere( string name, int2 dim, char[] footprint, Func<char, bool> cond )
+		public static IEnumerable<int2> UnpathableTiles( string footprint, int2 position )
 		{
-			if( footprint.Length != dim.X * dim.Y )
-				throw new InvalidOperationException( "Invalid footprint for " + name );
-			int index = 0;
+			return TilesWhere( position, footprint, a => a == 'x' );
+		}
 
-			for( int y = 0 ; y < dim.Y ; y++ )
-				for( int x = 0 ; x < dim.X ; x++ )
-					if( cond( footprint[ index++ ] ) )
-						yield return new int2( x, y );
+		static IEnumerable<int2> TilesWhere( int2 origin, string footprint, Func<char, bool> cond )
+		{
+			int2 offset = new int2( 0, 0 );
+			for( int i = 0 ; i < footprint.Length ; i++ )
+			{
+				if( footprint[ i ] == ' ' )
+					offset = new int2( 0, offset.Y + 1 );
+				else if( footprint[ i ] != '_' )
+				{
+					if( cond( footprint[ i ] ) )
+						yield return origin + offset;
+					++offset.X;
+				}
+				else
+					++offset.X;
+			}
 		}
 
 		public static int2 AdjustForBuildingSize( BuildingInfo buildingInfo )

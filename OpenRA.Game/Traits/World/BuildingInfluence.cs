@@ -36,7 +36,7 @@ namespace OpenRA.Traits
 
 		void ChangeInfluence( Actor a, Building building, bool isAdd )
 		{
-			foreach( var u in Footprint.UnpathableTiles( a.Info.Name, a.Info.Traits.Get<BuildingInfo>(), a.Location ) )
+			foreach( var u in Footprint.UnpathableTiles( a.Info.Traits.Get<BuildingInfo>(), a.Location ) )
 				if( map.IsInMap( u ) )
 					blocked[ u.X, u.Y ] = isAdd;
 

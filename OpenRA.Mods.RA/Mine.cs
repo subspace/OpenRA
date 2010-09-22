@@ -24,19 +24,16 @@ namespace OpenRA.Mods.RA
 		public object Create(ActorInitializer init) { return new Mine(init, this); }
 	}
 
-	class Mine : ICrushable, IOccupySpace
+	class Mine : OccupySpace, ICrushable
 	{
 		readonly Actor self;
 		readonly MineInfo info;
-		[Sync]
-		readonly int2 location;
 
 		public Mine(ActorInitializer init, MineInfo info)
+			: base( init )
 		{
 			this.self = init.self;
 			this.info = info;
-			this.location = init.Get<LocationInit,int2>();
-			self.World.WorldActor.Trait<LocationCache>().uim.Add(self, this);
 		}
 
 		public void OnCrush(Actor crusher)
@@ -51,10 +48,6 @@ namespace OpenRA.Mods.RA
 		
 		// TODO: Re-implement friendly-mine avoidance
 		public IEnumerable<string> CrushClasses { get { return info.CrushClasses; } }
-		
-		public int2 TopLeft { get { return location; } }
-
-		public IEnumerable<int2> OccupiedCells() { yield return TopLeft; }
 	}
 
 	/* tag trait for stuff that shouldnt trigger mines */
