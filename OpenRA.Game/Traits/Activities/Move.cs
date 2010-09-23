@@ -208,7 +208,7 @@ namespace OpenRA.Traits.Activities
 		{
 			if( path.Count == 0 ) return null;
 			var nextCell = path[ path.Count - 1 ];
-			if( !mobile.CanEnterCell( nextCell, ignoreBuilding, true ) )
+			if( !Mobile.CanEnterCell( self.World, mobile.Info, nextCell, ignoreBuilding, true ) )
 			{
 				if( ( mobile.toCell - destination.Value ).LengthSquared <= nearEnough )
 				{

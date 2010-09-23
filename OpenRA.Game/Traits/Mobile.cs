@@ -222,24 +222,18 @@ namespace OpenRA.Traits
 					: new[] { fromCell, toCell };
 		}
 
-		public bool CanEnterCell(int2 p)
+		public bool CanEnterCell(int2 cell)
 		{
-			return CanEnterCell( p, null, true);
+			return CanEnterCell( self.World, Info, cell, null, true );
 		}
 
 		public static bool CanEnterCell( World world, MobileInfo mi, int2 cell, Actor ignoreActor, bool checkTransientActors )
 		{
 			var lc = world.WorldActor.Trait<LocationCache>();
-			return Mobile.CanEnterCell( mi, world, lc, cell, ignoreActor, checkTransientActors );
+			return Mobile.CanEnterCell( world, mi, lc, cell, ignoreActor, checkTransientActors );
 		}
 		
-		public bool CanEnterCell( int2 cell, Actor ignoreActor, bool checkTransientActors )
-		{
-			var lc = self.World.WorldActor.Trait<LocationCache>();
-			return CanEnterCell( Info, self.World, lc, cell, ignoreActor, checkTransientActors );
-		}
-
-		public static bool CanEnterCell( MobileInfo mobileInfo, World world, LocationCache lc, int2 cell, Actor ignoreActor, bool checkTransientActors )
+		public static bool CanEnterCell( World world, MobileInfo mobileInfo, LocationCache lc, int2 cell, Actor ignoreActor, bool checkTransientActors )
 		{
 			if (MovementCostForCell(mobileInfo, world, cell) == int.MaxValue)
 				return false;

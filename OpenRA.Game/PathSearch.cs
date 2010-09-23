@@ -105,7 +105,7 @@ namespace OpenRA
 				if (costHere == int.MaxValue)
 					continue;
 
-				if (!Mobile.CanEnterCell(mobileInfo, world, lc, newHere, ignoreBuilding, checkForBlocked))
+				if (!Mobile.CanEnterCell(world, mobileInfo, lc, newHere, ignoreBuilding, checkForBlocked))
 					continue;
 				
 				if (customBlock != null && customBlock(newHere))
