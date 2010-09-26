@@ -46,7 +46,7 @@ namespace OpenRA.Mods.RA.Activities
 			if( IsCanceled ) return NextActivity;
 
 			return Util.SequenceActivities(
-				Fly.ToPx(Util.CenterOfCell(Target)),
+				Fly.ToCell(Target),
 				new FlyTimed(50),
 				this);
 		}

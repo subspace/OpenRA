@@ -20,6 +20,7 @@ namespace OpenRA.Mods.RA
 
 	public class Reservable : ITick
 	{
+		[Sync]
 		Actor reservedFor;
 		Actor self;
 

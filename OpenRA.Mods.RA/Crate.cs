@@ -47,9 +47,10 @@ namespace OpenRA.Mods.RA
 		public Crate(ActorInitializer init, CrateInfo info)
 		{
 			this.self = init.self;
+
 			if (init.Contains<LocationInit>())
 				this.Location = init.Get<LocationInit,int2>();
-			
+
 			this.Info = info;
 			
 			self.World.WorldActor.Trait<UnitInfluence>().Add(self, this);
@@ -82,11 +83,9 @@ namespace OpenRA.Mods.RA
 		public int2 TopLeft { get { return Location; } }
 		public IEnumerable<int2> OccupiedCells() { return new int2[] { Location }; }
 
-		public int2 PxPosition { get; private set; }
-
-		public void SetPxPosition( Actor self, int2 px )
+		public int2 PxPosition
 		{
-			SetPosition( self, Util.CellContaining( px ) );
+			get { return Util.CenterOfCell( TopLeft ); }
 		}
 
 		public bool CanEnterCell(int2 cell)
@@ -103,13 +102,17 @@ namespace OpenRA.Mods.RA
 			uim.Remove(self, this);
 
 			Location = cell;
-			PxPosition = Util.CenterOfCell(cell);
 
 			var seq = self.World.GetTerrainInfo(cell).IsWater ? "water" : "idle";
 			if (seq != self.Trait<RenderSimple>().anim.CurrentSequence.Name)
 				self.Trait<RenderSimple>().anim.PlayRepeating(seq);
 
 			uim.Add(self, this);
+		}
+
+		public void SetPxPosition( Actor self, int2 px )
+		{
+			SetPosition( self, Util.CellContaining( px ) );
 		}
 
 		public IEnumerable<string> CrushClasses { get { yield return "crate"; } }

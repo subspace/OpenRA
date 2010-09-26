@@ -84,7 +84,7 @@ namespace OpenRA.Traits
 
 		public static int2 CenterOfCell(int2 loc)
 		{
-			return new int2(Game.CellSize/2, Game.CellSize/2) + Game.CellSize * loc;
+			return new int2(12, 12) + Game.CellSize * loc;
 		}
 
 		public static int2 BetweenCells(int2 from, int2 to)

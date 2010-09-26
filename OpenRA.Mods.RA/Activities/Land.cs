@@ -38,11 +38,10 @@ namespace OpenRA.Mods.RA.Activities
 
 			var desiredFacing = Util.GetFacing(d, aircraft.Facing);
 			aircraft.Facing = Util.TickFacing(aircraft.Facing, desiredFacing, aircraft.ROT);
-			var speed = .2f * aircraft.MovementSpeedForCell(self, self.Location);
+			var speed = .2f * aircraft.MovementSpeedForCell(self);
 			var angle = aircraft.Facing / 128f * Math.PI;
 
-			aircraft.center += speed * -float2.FromAngle((float)angle);
-			aircraft.Location = Util.CellContaining(self.CenterLocation);
+			aircraft.PxPosition += (speed * -float2.FromAngle((float)angle)).ToInt2();
 
 			return this;
 		}

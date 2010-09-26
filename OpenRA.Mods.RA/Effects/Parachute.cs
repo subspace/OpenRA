@@ -58,7 +58,9 @@ namespace OpenRA.Mods.RA.Effects
 						w.Remove(this);
 						var loc = Traits.Util.CellContaining(location);
 						cargo.CancelActivity();
-						cargo.Trait<ITeleportable>().SetPosition(cargo, loc);
+						
+						var mobile = cargo.Trait<ITeleportable>();
+						mobile.SetPosition(cargo, loc);
 						w.Add(cargo);
 					});
 		}

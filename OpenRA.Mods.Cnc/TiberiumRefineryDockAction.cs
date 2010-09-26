@@ -25,7 +25,7 @@ namespace OpenRA.Mods.Cnc
 		bool preventDock = false;
 		public void OnDock(Actor self, Actor harv, DeliverResources dockOrder)
 		{
-			int2 startDock = harv.Trait<IHasLocation>().PxPosition;
+			int2 startDock = harv.Trait<Mobile>().PxPosition;
 			int2 endDock = self.Trait<IHasLocation>().PxPosition + new int2(-15,8);
 			var harvester = harv.Trait<Harvester>();
 

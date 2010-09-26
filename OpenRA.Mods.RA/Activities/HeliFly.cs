@@ -16,8 +16,8 @@ namespace OpenRA.Mods.RA.Activities
 {
 	class HeliFly : CancelableActivity
 	{
-		public readonly float2 Dest;
-		public HeliFly(float2 dest)
+		public readonly int2 Dest;
+		public HeliFly(int2 dest)
 		{
 			Dest = dest;
 		}
@@ -26,37 +26,60 @@ namespace OpenRA.Mods.RA.Activities
 		{
 			if (IsCanceled)	return NextActivity;
 
-			var info = self.Info.Traits.Get<HelicopterInfo>();
-			var aircraft = self.Trait<Aircraft>();
-
-			if (aircraft.Altitude != info.CruiseAltitude)
-			{
-				aircraft.Altitude += Math.Sign(info.CruiseAltitude - aircraft.Altitude);
-				return this;
-			}
-			
-			var dist = Dest - self.CenterLocation;
-			if (float2.WithinEpsilon(float2.Zero, dist, 2))
-			{
-				aircraft.center = Dest;
-				aircraft.Location = Util.CellContaining(self.CenterLocation);
-				return NextActivity;
-			}
-
-			var desiredFacing = Util.GetFacing(dist, aircraft.Facing);
-			aircraft.Facing = Util.TickFacing(aircraft.Facing, desiredFacing, 
-				aircraft.ROT);
-
-			var rawSpeed = .2f * aircraft.MovementSpeedForCell(self, self.Location);
-			aircraft.center += (rawSpeed / dist.Length) * dist;
-			aircraft.Location = Util.CellContaining(self.CenterLocation);
-
-			return this;
+			return
+				Util.SequenceActivities(
+					new HeliFlyPart( self.Trait<Aircraft>().PxPosition, Dest ),
+					NextActivity )
+				.Tick( self );
 		}
 
 		public override IEnumerable<float2> GetCurrentPath()
 		{
 			yield return Dest;
+		}
+
+		class HeliFlyPart : CancelableActivity
+		{
+			int2 pxStart, pxEnd;
+			int length;
+			int offset;
+
+			public HeliFlyPart( int2 pxStart, int2 pxEnd )
+			{
+				this.pxStart = pxStart;
+				this.pxEnd = pxEnd;
+				var d = (float2)(pxEnd - pxStart);
+				this.length = (int)Math.Ceiling( d.Length );
+			}
+
+			public override IActivity Tick( Actor self )
+			{
+				if (IsCanceled)	return NextActivity;
+
+				var info = self.Info.Traits.Get<HelicopterInfo>();
+				var aircraft = self.Trait<Aircraft>();
+
+				if (aircraft.Altitude != info.CruiseAltitude)
+				{
+					aircraft.Altitude += Math.Sign(info.CruiseAltitude - aircraft.Altitude);
+					return this;
+				}
+
+				var speed = .2f * aircraft.MovementSpeedForCell(self);
+				offset += (int)Math.Ceiling( speed );
+				if( offset >= length )
+				{
+					aircraft.PxPosition = pxEnd;
+					return NextActivity;
+				}
+
+				var desiredFacing = Util.GetFacing(pxEnd - pxStart, aircraft.Facing);
+				aircraft.Facing = Util.TickFacing(aircraft.Facing, desiredFacing, 
+					aircraft.ROT);
+
+				aircraft.PxPosition = int2.Lerp( pxStart, pxEnd, offset, length );
+				return this;
+			}
 		}
 	}
 }

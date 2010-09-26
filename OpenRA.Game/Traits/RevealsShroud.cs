@@ -27,10 +27,11 @@ namespace OpenRA.Traits
 		}
 		
 		public void Tick(Actor self)
-		{	
-			if (previousLocation != self.Location)
+		{
+			var loc = Util.CenterOfCell( self.Trait<IHasLocation>().PxPosition );
+			if (previousLocation != loc)
 			{
-				previousLocation = self.Location;
+				previousLocation = loc;
 				self.World.WorldActor.Trait<Shroud>().UpdateActor(self);
 			}
 		}

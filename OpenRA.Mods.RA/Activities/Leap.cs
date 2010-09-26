@@ -16,16 +16,18 @@ namespace OpenRA.Mods.RA.Activities
 {
 	class Leap : CancelableActivity
 	{
+		Mobile mobile;
 		Target target;
 		int2 initialLocation;
+		int moveFraction;
 
 		const int delay = 6;
-		int moveFraction;
 
 		public Leap(Actor self, Target target)
 		{
-			this.target = target; 
-			initialLocation = self.Trait<Mobile>().PxPosition;
+			this.target = target;
+			this.mobile = self.Trait<Mobile>();
+			initialLocation = mobile.PxPosition;
 
 			self.Trait<RenderInfantry>().Attacking(self);
 			Sound.Play("dogg5p.aud", self.CenterLocation);
@@ -37,15 +39,14 @@ namespace OpenRA.Mods.RA.Activities
 			if (!target.IsValid) return NextActivity;
 
 			self.Trait<AttackLeap>().IsLeaping = true;
-			var mobile = self.Trait<Mobile>();
+
 			++moveFraction;
 
-			mobile.PxPosition = int2.Lerp(initialLocation, target.PxPosition, moveFraction, delay);
+			mobile.PxPosition = int2.Lerp( initialLocation, target.PxPosition, moveFraction, delay );
 
 			if (moveFraction >= delay)
 			{
-				self.TraitsImplementing<IMove>().FirstOrDefault()
-					.SetPosition(self, Util.CellContaining(target.CenterLocation));
+				self.Trait<IMove>().SetPosition(self, Util.CellContaining(target.CenterLocation));
 
 				if (target.IsActor)
 					target.Actor.Kill(self);

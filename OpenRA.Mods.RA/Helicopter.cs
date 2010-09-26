@@ -29,7 +29,7 @@ namespace OpenRA.Mods.RA
 		public override object Create( ActorInitializer init ) { return new Helicopter( init, this); }
 	}
 
-	class Helicopter : Aircraft, ITick, IIssueOrder, IResolveOrder, IOrderCursor, IOrderVoice
+	class Helicopter : Aircraft, ITick, IIssueOrder, IResolveOrder, IOrderCursor, IOrderVoice, IOccupySpace
 	{
 		public IDisposable reservation;
 		HelicopterInfo Info;
@@ -110,7 +110,7 @@ namespace OpenRA.Mods.RA
 					reservation = res.Reserve(self);
 
 				var exit = order.TargetActor.Info.Traits.WithInterface<ExitInfo>().FirstOrDefault();
-				var offset = exit != null ? exit.SpawnOffset : float2.Zero;
+				var offset = exit != null ? exit.SpawnOffset : int2.Zero;
 				
 				if (self.Owner == self.World.LocalPlayer)
 					self.World.AddFrameEndTask(w =>
@@ -122,7 +122,7 @@ namespace OpenRA.Mods.RA
 					});
 				
 				self.CancelActivity();
-				self.QueueActivity(new HeliFly(order.TargetActor.CenterLocation + offset));
+				self.QueueActivity(new HeliFly(order.TargetActor.Trait<IHasLocation>().PxPosition + offset));
 				self.QueueActivity(new Turn(Info.InitialFacing));
 				self.QueueActivity(new HeliLand(false));
 				self.QueueActivity(Info.RearmBuildings.Contains(order.TargetActor.Info.Name)
@@ -137,24 +137,26 @@ namespace OpenRA.Mods.RA
 			if (aircraft.Altitude <= 0)
 				return;
 			
-			var rawSpeed = .2f * aircraft.MovementSpeedForCell(self, self.Location);
-			var otherHelis = self.World.FindUnitsInCircle(self.CenterLocation, Info.IdealSeparation)
-				.Where(a => a.HasTrait<Helicopter>());
+			/////// this should be idle behaviour
 
-			var f = otherHelis
-				.Select(h => self.Trait<Helicopter>().GetRepulseForce(self, h))
-				.Aggregate(float2.Zero, (a, b) => a + b);
+			//var rawSpeed = .2f * aircraft.MovementSpeedForCell(self, self.Location);
+			//var otherHelis = self.World.FindUnitsInCircle(self.CenterLocation, Info.IdealSeparation)
+			//    .Where(a => a.HasTrait<Helicopter>());
 
-			aircraft.center += rawSpeed * f;
+			//var f = otherHelis
+			//    .Select(h => self.Trait<Helicopter>().GetRepulseForce(self, h))
+			//    .Aggregate(float2.Zero, (a, b) => a + b);
 
-			if (--offsetTicks <= 0)
-			{
-				aircraft.center += Info.InstabilityMagnitude * self.World.SharedRandom.Gauss2D(5);
-				aircraft.Altitude += (int)(Info.InstabilityMagnitude * self.World.SharedRandom.Gauss1D(5));
-				offsetTicks = Info.InstabilityTicks;
-			}
+			//self.CenterLocation += rawSpeed * f;
 
-			Location = Util.CellContaining(self.CenterLocation);
+			//if (--offsetTicks <= 0)
+			//{
+			//    self.CenterLocation += Info.InstabilityMagnitude * self.World.SharedRandom.Gauss2D(5);
+			//    aircraft.Altitude += (int)(Info.InstabilityMagnitude * self.World.SharedRandom.Gauss1D(5));
+			//    offsetTicks = Info.InstabilityTicks;
+			//}
+
+			//Location = Util.CellContaining(self.CenterLocation);
 		}
 			
 		const float Epsilon = .5f;
@@ -170,6 +172,13 @@ namespace OpenRA.Mods.RA
 			if (d.LengthSquared < Epsilon)
 				return float2.FromAngle((float)self.World.SharedRandom.NextDouble() * 3.14f);
 			return (5 / d.LengthSquared) * d;
+		}
+
+		public int2 TopLeft { get { return Util.CellContaining( PxPosition ); } }
+		public IEnumerable<int2> OccupiedCells()
+		{
+			if( Altitude == 0 )
+				yield return TopLeft;
 		}
 	}
 }

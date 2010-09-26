@@ -47,13 +47,12 @@ namespace OpenRA.Traits
 		
 		readonly PowerManager PlayerPower;
 
-		public int2 PxPosition { get { return ( 2 * topLeft + Info.Dimensions ) * Game.CellSize / 2; } }
-
 		public Building(ActorInitializer init)
 		{
 			this.self = init.self;
 			this.topLeft = init.Get<LocationInit,int2>();
 			Info = self.Info.Traits.Get<BuildingInfo>();
+			PxPosition = ( 2 * topLeft + Info.Dimensions ) * Game.CellSize / 2;
 			
 			PlayerPower = init.self.Owner.PlayerActor.Trait<PowerManager>();
 		}
@@ -98,5 +97,7 @@ namespace OpenRA.Traits
 		{
 			return Footprint.UnpathableTiles( self.Info.Name, Info, TopLeft );
 		}
+
+		public int2 PxPosition { get; set; }
 	}
 }

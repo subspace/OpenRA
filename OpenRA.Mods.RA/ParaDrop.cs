@@ -41,18 +41,19 @@ namespace OpenRA.Mods.RA
 			var info = self.Info.Traits.Get<ParaDropInfo>();
 			var r = info.LZRange;
 
-			if ((self.Location - lz).LengthSquared <= r * r && !droppedAt.Contains(self.Location))
+			var loc = Util.CellContaining( self.CenterLocation );
+			if ((loc - lz).LengthSquared <= r * r && !droppedAt.Contains(loc))
 			{
 				var cargo = self.Trait<Cargo>();
 				if (cargo.IsEmpty(self))
 					FinishedDropping(self);
 				else
 				{
-					if (!IsSuitableCell(cargo.Peek(self), self.Location))
+					if (!IsSuitableCell(cargo.Peek(self), loc))
 						return;
 
 					// unload a dude here
-					droppedAt.Add(self.Location);
+					droppedAt.Add(loc);
 
 					var a = cargo.Unload(self);
 					var rs = a.Trait<RenderSimple>();

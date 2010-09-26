@@ -257,20 +257,20 @@ namespace OpenRA.Traits.Activities
 		abstract class MovePart : IActivity
 		{
 			public readonly Move move;
-			public readonly int2 from, to;
+			public readonly int2 pxFrom, pxTo;
 			public readonly int fromFacing, toFacing;
 			public int moveFraction;
 			public readonly int moveFractionTotal;
 
-			public MovePart( Move move, int2 from, int2 to, int fromFacing, int toFacing, int startingFraction )
+			public MovePart( Move move, int2 pxFrom, int2 pxTo, int fromFacing, int toFacing, int startingFraction )
 			{
 				this.move = move;
-				this.from = from;
-				this.to = to;
+				this.pxFrom = pxFrom;
+				this.pxTo = pxTo;
 				this.fromFacing = fromFacing;
 				this.toFacing = toFacing;
 				this.moveFraction = startingFraction;
-				this.moveFractionTotal = (int)( ( to - from ) * 3 ).Length;
+				this.moveFractionTotal = ( ( pxTo - pxFrom ) * 3 ).Length;
 			}
 
 			public void Cancel( Actor self )
@@ -311,7 +311,7 @@ namespace OpenRA.Traits.Activities
 
 			void UpdateCenterLocation( Actor self, Mobile mobile )
 			{
-				mobile.PxPosition = int2.Lerp( from, to, moveFraction, moveFractionTotal );
+				mobile.PxPosition = int2.Lerp( pxFrom, pxTo, moveFraction, moveFractionTotal );
 
 				if( moveFraction >= moveFractionTotal )
 					mobile.Facing = toFacing & 0xFF;

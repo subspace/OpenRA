@@ -35,7 +35,7 @@ namespace OpenRA.Mods.RA.Activities
 		public override IActivity Tick(Actor self)
 		{
 			var targetAltitude = self.Info.Traits.Get<PlaneInfo>().CruiseAltitude;
-			if (IsCanceled || !self.World.Map.IsInMap(self.Location)) return NextActivity;
+			if (IsCanceled || !self.World.Map.IsInMap(Util.CenterOfCell(self.CenterLocation.ToInt2()))) return NextActivity;
 			FlyUtil.Fly(self, targetAltitude);
 			return this;
 		}

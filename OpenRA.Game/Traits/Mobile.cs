@@ -81,11 +81,10 @@ namespace OpenRA.Traits
 		public int InitialFacing { get { return Info.InitialFacing; } }
 
 		[Sync]
-		public int2 PxPosition { get; set; }
-		[Sync]
 		public int2 fromCell { get { return __fromCell; } }
 		[Sync]
 		public int2 toCell { get { return __toCell; } }
+
 		[Sync]
 		public int PathHash;	// written by Move.EvalPath, to temporarily debug this crap.
 
@@ -110,8 +109,8 @@ namespace OpenRA.Traits
 			if (init.Contains<LocationInit>())
 			{
 				this.__fromCell = this.__toCell = init.Get<LocationInit,int2>();
-				this.PxPosition = Util.CenterOfCell( fromCell );
 				AddInfluence();
+				PxPosition = Util.CenterOfCell( toCell );
 			}
 			
 			this.Facing = init.Contains<FacingInit>() ? init.Get<FacingInit,int>() : info.InitialFacing;
@@ -124,7 +123,7 @@ namespace OpenRA.Traits
 			PxPosition = Util.CenterOfCell(fromCell);
 		}
 
-		public void SetPxPosition( Actor self, int2 px )
+		public void SetPxPosition(Actor self, int2 px)
 		{
 			var cell = Util.CellContaining( px );
 			SetLocation( cell, cell );
@@ -218,6 +217,8 @@ namespace OpenRA.Traits
 					? new[] { toCell }
 					: new[] { fromCell, toCell };
 		}
+
+		public int2 PxPosition { get; set; }
 
 		public bool CanEnterCell(int2 p)
 		{

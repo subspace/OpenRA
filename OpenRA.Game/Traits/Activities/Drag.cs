@@ -38,7 +38,7 @@ namespace OpenRA.Traits.Activities
 				mobile.IsMoving = false;
 				return NextActivity;
 			}
-			mobile.IsMoving = true;
+			self.Trait<Mobile>().IsMoving = true;
 			return this;
 		}
 
