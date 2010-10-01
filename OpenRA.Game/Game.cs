@@ -48,7 +48,6 @@ namespace OpenRA
 			var map = modData.PrepareMap(uid);
 			
 			viewport = new Viewport(new float2(Renderer.Resolution), map.TopLeft, map.BottomRight, Renderer);
-			world = null;	// trying to access the old world will NRE, rather than silently doing it wrong.
 			world = new World(modData.Manifest, map);
 		}
 
@@ -102,7 +101,7 @@ namespace OpenRA
 		static ConnectionState lastConnectionState = ConnectionState.PreConnecting;
 		public static int LocalClientId { get { return orderManager.Connection.LocalClientId; } }
 
-		static void Tick()
+		static void Tick( World world )
 		{
 			if (orderManager.Connection.ConnectionState != lastConnectionState)
 			{
@@ -160,7 +159,7 @@ namespace OpenRA
 
 		internal static event Action LobbyInfoChanged = () => { };
 
-		internal static void SyncLobbyInfo(string data)
+		internal static void SyncLobbyInfo( World world, string data)
 		{
 			LobbyInfo = Session.Deserialize(data);
 
@@ -187,6 +186,7 @@ namespace OpenRA
 		public static event Action BeforeGameStart = () => {};
 		internal static void StartGame(string map)
 		{
+			world = null;
 			BeforeGameStart();
 			LoadMap(map);
 			if (orderManager.GameStarted) return;
@@ -201,23 +201,20 @@ namespace OpenRA
 
 		public static void DispatchMouseInput(MouseInputEvent ev, MouseEventArgs e, Modifiers modifierKeys)
 		{
-			if (world == null)
-				return;
-			
-			int sync = world.SyncHash();
-			var initialWorld = world;
+			var world = Game.world;
+			if (world == null) return;
 
-			var mi = new MouseInput
+			Sync.CheckSyncUnchanged( world, () =>
 			{
-				Button = (MouseButton)(int)e.Button,
-				Event = ev,
-				Location = new int2(e.Location),
-				Modifiers = modifierKeys,
-			};
-			Widget.HandleInput(world, mi);
-
-			if (sync != world.SyncHash() && world == initialWorld)
-				throw new InvalidOperationException("Desync in DispatchMouseInput");
+				var mi = new MouseInput
+				{
+					Button = (MouseButton)(int)e.Button,
+					Event = ev,
+					Location = new int2( e.Location ),
+					Modifiers = modifierKeys,
+				};
+				Widget.HandleInput( world, mi );
+			} );
 		}
 
 		public static bool IsHost
@@ -232,16 +229,13 @@ namespace OpenRA
 
 		public static void HandleKeyEvent(KeyInput e)
 		{
-			if (world == null)
-				return;
-			
-			int sync = world.SyncHash();
+			var world = Game.world;
+			if( world == null ) return;
 
-			if (Widget.HandleKeyPress(e))
-				return;
-
-			if (sync != Game.world.SyncHash())
-				throw new InvalidOperationException("Desync in OnKeyPress");
+			Sync.CheckSyncUnchanged( world, () =>
+			{
+				Widget.HandleKeyPress( e );
+			} );
 		}
 
 		static Modifiers modifiers;
@@ -319,7 +313,7 @@ namespace OpenRA
 		{
 			while (!quit)
 			{
-				Tick();
+				Tick( world );
 				Application.DoEvents();
 			}
 		}
