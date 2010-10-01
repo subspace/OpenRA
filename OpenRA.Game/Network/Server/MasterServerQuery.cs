@@ -15,7 +15,7 @@ using System.Text;
 using System.Threading;
 using OpenRA.FileFormats;
 
-namespace OpenRA.Server
+namespace OpenRA.Network.Server
 {
 	static class MasterServerQuery
 	{

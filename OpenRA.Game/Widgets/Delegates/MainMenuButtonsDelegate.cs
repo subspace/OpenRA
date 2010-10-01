@@ -9,7 +9,7 @@
 #endregion
 
 using OpenRA.FileFormats;
-using OpenRA.Server;
+using OpenRA.Network.Server;
 
 namespace OpenRA.Widgets.Delegates
 {

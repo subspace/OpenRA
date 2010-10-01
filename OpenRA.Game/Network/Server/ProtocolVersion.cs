@@ -8,7 +8,7 @@
  */
 #endregion
 
-namespace OpenRA.Server
+namespace OpenRA.Network.Server
 {
 	public static class ProtocolVersion
 	{

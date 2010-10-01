@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using OpenRA.FileFormats;
-using OpenRA.Server;
+using OpenRA.Network.Server;
 
 namespace OpenRA.Widgets.Delegates
 {

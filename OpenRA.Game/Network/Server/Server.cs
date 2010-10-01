@@ -21,7 +21,7 @@ using OpenRA.FileFormats;
 using OpenRA.GameRules;
 using OpenRA.Network;
 
-namespace OpenRA.Server
+namespace OpenRA.Network.Server
 {
 	static class Server
 	{

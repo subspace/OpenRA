@@ -10,13 +10,23 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace OpenRA.Network
 {
-	static class OrderIO
+	interface IConnection
 	{
-		
+		int LocalClientId { get; }
+		ConnectionState ConnectionState { get; }
+		void Send( byte[] packet );
+		void Receive( Action<int, byte[]> packetFn );
+	}
+
+	enum ConnectionState
+	{
+		PreConnecting,
+		NotConnected,
+		Connecting,
+		Connected,
 	}
 }

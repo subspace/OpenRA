@@ -17,7 +17,8 @@ using OpenRA.FileFormats;
 using OpenRA.GameRules;
 using OpenRA.Graphics;
 using OpenRA.Network;
-using OpenRA.Server;
+using OpenRA.Network.Client;
+using OpenRA.Network.Server;
 using OpenRA.Support;
 using OpenRA.Widgets;
 
@@ -274,7 +275,8 @@ namespace OpenRA
 			PerfHistory.items["render"].hasNormalTick = false;
 			PerfHistory.items["batches"].hasNormalTick = false;
 			PerfHistory.items["text"].hasNormalTick = false;
-			PerfHistory.items["cursor"].hasNormalTick = false;
+			PerfHistory.items["cursor"].hasNormalTick = false;
+
 			
 			JoinLocal();
 			StartGame(modData.Manifest.ShellmapUid);

@@ -11,7 +11,7 @@
 using System;
 using System.IO;
 
-namespace OpenRA.Server
+namespace OpenRA.Network.Server
 {
 	class ServerOrder
 	{

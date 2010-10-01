@@ -78,7 +78,7 @@
     <Compile Include="GameRules\WeaponInfo.cs" />
     <Compile Include="Group.cs" />
     <Compile Include="Orders\GenericSelectTarget.cs" />
-    <Compile Include="Server\ProtocolVersion.cs" />
+    <Compile Include="Network\Server\ProtocolVersion.cs" />
     <Compile Include="Traits\BaseBuilding.cs" />
     <Compile Include="Traits\LintAttributes.cs" />
     <Compile Include="Traits\Player\PlayerResources.cs" />
@@ -103,16 +103,15 @@
     <Compile Include="Graphics\MappedImage.cs" />
     <Compile Include="Graphics\Minimap.cs" />
     <Compile Include="Graphics\SpriteFont.cs" />
-    <Compile Include="Network\Connection.cs" />
     <Compile Include="Network\OrderIO.cs" />
     <Compile Include="Network\OrderManager.cs" />
     <Compile Include="PathSearch.cs" />
     <Compile Include="Selection.cs" />
-    <Compile Include="Server\Connection.cs" />
-    <Compile Include="Server\Exts.cs" />
-    <Compile Include="Server\MasterServerQuery.cs" />
-    <Compile Include="Server\Server.cs" />
-    <Compile Include="Server\ServerOrder.cs" />
+    <Compile Include="Network\Server\Connection.cs" />
+    <Compile Include="Network\Exts.cs" />
+    <Compile Include="Network\Server\MasterServerQuery.cs" />
+    <Compile Include="Network\Server\Server.cs" />
+    <Compile Include="Network\Server\ServerOrder.cs" />
     <Compile Include="ShroudRenderer.cs" />
     <Compile Include="Sound.cs" />
     <Compile Include="Support\PerfHistory.cs" />
@@ -222,6 +221,10 @@
     <Compile Include="ActorReference.cs" />
     <Compile Include="ModData.cs" />
     <Compile Include="Map.cs" />
+    <Compile Include="Network\Client\EchoConnection.cs" />
+    <Compile Include="Network\Client\NetworkConnection.cs" />
+    <Compile Include="Network\Client\ReplayConnection.cs" />
+    <Compile Include="Network\IConnection.cs" />
     <Compile Include="Network\Session.cs" />
     <Compile Include="ObjectCreator.cs" />
     <Compile Include="Network\SyncReport.cs" />
@@ -250,6 +253,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="OpenRA.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Server\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
