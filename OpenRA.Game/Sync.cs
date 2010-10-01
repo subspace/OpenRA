@@ -138,13 +138,28 @@ namespace OpenRA
 				throw new InvalidOperationException( "Desync in DispatchMouseInput" );
 		}
 
+		static bool inUnsyncedCode = false;
+
 		public static T CheckSyncUnchanged<T>( World world, Func<T> fn )
 		{
 			int sync = world.SyncHash();
-			var ret = fn();
-			if( sync != world.SyncHash() )
-				throw new InvalidOperationException( "Desync in DispatchMouseInput" );
-			return ret;
+			inUnsyncedCode = true;
+			try
+			{
+				return fn();
+			}
+			finally
+			{
+				inUnsyncedCode = false;
+				if( sync != world.SyncHash() )
+					throw new InvalidOperationException( "Desync in DispatchMouseInput" );
+			}
+		}
+
+		public static void AssertUnsynced( string message )
+		{
+			if( !inUnsyncedCode )
+				throw new InvalidOperationException( message );
 		}
 	}
 }
