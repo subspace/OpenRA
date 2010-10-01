@@ -36,6 +36,8 @@ namespace OpenRA.Mods.RA
 		int2 baseCenter;
         XRandom random = new XRandom(); //we do not use the synced random number generator.
 
+		World world { get { return p.PlayerActor.World; } }
+
 		Dictionary<string, float> buildingFractions = new Dictionary<string, float>
 		{
 			{ "proc", .2f },
@@ -121,9 +123,9 @@ namespace OpenRA.Mods.RA
 			var bi = Rules.Info[item.Item].Traits.Get<BuildingInfo>();
 
 			for (var k = 0; k < MaxBaseDistance; k++)
-				foreach (var t in Game.world.FindTilesInCircle(baseCenter, k))
-					if (Game.world.CanPlaceBuilding(item.Item, bi, t, null))
-						if (Game.world.IsCloseEnoughToBase(p, item.Item, bi, t))
+				foreach (var t in world.FindTilesInCircle(baseCenter, k))
+					if (world.CanPlaceBuilding(item.Item, bi, t, null))
+						if (world.IsCloseEnoughToBase(p, item.Item, bi, t))
 							return t;
 
 			return null;		// i don't know where to put it.
@@ -200,7 +202,7 @@ namespace OpenRA.Mods.RA
             {
                 Game.Debug("Launch an attack.");
 
-				int2 attackTarget = Game.world.WorldActor.Trait<MPStartLocations>().Start
+				int2 attackTarget = world.WorldActor.Trait<MPStartLocations>().Start
 					.Where(kv => kv.Key != p)
 					.Select(kv => kv.Value)
 					.Random(random);
@@ -228,8 +230,8 @@ namespace OpenRA.Mods.RA
         //won't work for shipyards...
         private int2 ChooseRallyLocationNear(int2 startPos)
         {
-            foreach (var t in Game.world.FindTilesInCircle(startPos, 6))
-                if (Game.world.IsCellBuildable(t, false) && t != startPos)
+            foreach (var t in world.FindTilesInCircle(startPos, 6))
+                if (world.IsCellBuildable(t, false) && t != startPos)
                         return t;
 
             return startPos;		// i don't know where to put it.
@@ -276,7 +278,7 @@ namespace OpenRA.Mods.RA
         private void BuildRandom(string category)
         {
 			// Pick a free queue
-			var queue = Game.world.Queries.WithTraitMultiple<ProductionQueue>()
+			var queue = world.Queries.WithTraitMultiple<ProductionQueue>()
 				.Where(a => a.Actor.Owner == p &&
 				       a.Trait.Info.Type == category &&
 				       a.Trait.CurrentItem() == null)
@@ -296,7 +298,7 @@ namespace OpenRA.Mods.RA
         private void BuildBuildings()
         {
             // Pick a free queue
-			var queue = Game.world.Queries.WithTraitMultiple<ProductionQueue>()
+			var queue = world.Queries.WithTraitMultiple<ProductionQueue>()
 				.Where(a => a.Actor.Owner == p && a.Trait.Info.Type == "Building")
 				.Select(a => a.Trait)
 				.FirstOrDefault();
