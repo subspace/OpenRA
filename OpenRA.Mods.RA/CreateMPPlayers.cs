@@ -77,6 +77,11 @@ namespace OpenRA.Mods.RA
 			// Hack: All map players are neutral wrt everyone else
 			if (p.Index < 0 || q.Index < 0) return Stance.Neutral;
 
+            // Hack: Make all bots enemies.  We should allow the host to pick
+            // the correct team at some point.
+            if (p.PlayerActor.TraitsImplementing<IBot>() != null)
+                return Stance.Enemy;
+
 			var pc = GetClientForPlayer(p);
 			var qc = GetClientForPlayer(q);
 
